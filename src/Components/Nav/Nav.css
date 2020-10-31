@@ -1,0 +1,13 @@
+.Nav {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    right: 90vw;
+    width: 10vw;
+    height: 100vh;
+    background-color: #003366;
+}
+
+.nav-link {
+    text-decoration: none;
+}

@@ -1,0 +1,12 @@
+.navigation__tab{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    padding:10px;
+    cursor:pointer;
+}
+
+.navigation__tab:hover{
+    background:#00000040;
+}

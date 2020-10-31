@@ -1,0 +1,158 @@
+.chatbox {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    right: 0vw;
+    width: 60vw;
+    height: 100vh;
+}
+
+header {
+    flex: 1;
+    background-color: #003366;
+}
+
+.sections {
+    flex: 8;
+    padding: 10px;
+    background: rgb(238, 236, 236);
+    overflow: auto;
+    position: relative;
+}
+
+.sections::-webkit-scrollbar{
+    width: 5px;
+}
+.sections::-webkit-scrollbar-thumb{
+    width: 5px;
+    background-color: grey;
+}
+
+footer {
+    flex: 1;
+    display: flex;
+    background: #003366;
+    flex-wrap: wrap;
+    align-items: center;
+    position: relative;
+}
+
+#text-container {
+    flex: 4;
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    box-sizing: border-box;
+}
+#textarea{
+    flex-grow: 1;
+    margin: 0px;
+    border-radius: 0px;
+    padding: 5px 20px 5px 20px;
+    border-radius: 30px;
+    background-color: white;
+    outline: none;
+    color: black;
+    max-height: 50px;
+    overflow: auto;
+}
+#textarea::-webkit-scrollbar {
+    width: 0px;
+}
+#text-container button {
+    font-family: "Comic Sans MS";
+    border-radius: 0px 0px 5px 5px;
+    border: none;
+    font-size: 120%;
+    color: white;
+    background-color: #253757;
+    padding: 10px 20px;
+}
+
+/*#search{
+    padding:10px;
+    border:none;
+    flex:1;
+    outline: none;
+    font-family: Comic Sans MS;
+    font-weight: bold;
+    font-size: 125%;
+}
+
+#search-container{
+    display: flex;
+    margin:30px 1px;
+    justify-content: center;
+}
+
+#search-container > div{
+    width: 40%;
+    align-items: center;
+    display: flex;
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+}
+
+#search-container > div > input{
+    border-left: 1px solid lightgrey;
+    padding:10px;
+}
+
+#search-container > div > div{
+    padding:10px 20px;
+    font: bold;
+}
+*/
+
+.message {
+    padding: 10px 20px;
+    min-width: 10%;
+    max-width: 70%;
+    background: #253757;
+    color: black;
+    border-radius: 20px;
+    margin: 10px 0;
+}
+
+.message_receiver {
+    background: #ffffff;
+    align-self: flex-start;
+}
+.message_sender {
+    align-self: flex-end;
+    color: white;
+}
+
+.contact_name{
+    display: flex;
+}
+
+.online{
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    background-color: green;
+    align-self: flex-start;
+    margin-left: 2px;
+}
+
+.chatbox h1{
+    color:white
+}
+
+.scroll-top{
+    position: absolute;
+    bottom: 100%;
+    right: 0;
+    padding: 10px;
+    background-color: #00000080;
+    color: black;
+    border-radius: 50%;
+    height: 25px;
+    width: 25px;
+    margin: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
