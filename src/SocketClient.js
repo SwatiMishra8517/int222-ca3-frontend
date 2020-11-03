@@ -14,9 +14,6 @@ class SocketClient {
             console.log("RECEIVED", data);
         });
     }
-    sendMessage(message) {
-        this.socket.emit("message", { text: message });
-    }
 }
 
 export default new SocketClient().socket;

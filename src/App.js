@@ -64,19 +64,53 @@ export function App() {
                 }
                 return {
                     ...prev,
-                    groupChat: data.map((e) => ({ ...e, sender: e.from })),
+                    groupChat: data.map((e) => ({
+                        ...e,
+                        sender: e.from,
+                        user: e.from === u?.username,
+                    })),
                 };
             });
         });
 
         SocketClient.on("receiveMessage", (data) => {
-            sounds.NEW_MESSAGE.play();
             let from = data.from;
-            console.log(data);
             if (data.sender) {
                 from = "groupChat";
                 console.log(contacts);
             }
+            console.log(data);
+            if (data.typing !== undefined) {
+                if (data.typing) {
+                    setContacts((prev) =>
+                        prev.map((e) => {
+                            if (e.uid === from) {
+                                return {
+                                    ...e,
+                                    typing: true,
+                                    sender: data.sender,
+                                };
+                            }
+                            return e;
+                        })
+                    );
+                } else {
+                    setContacts((prev) =>
+                        prev.map((e) => {
+                            if (e.uid === from) {
+                                return {
+                                    ...e,
+                                    typing: false,
+                                    sender: data.sender,
+                                };
+                            }
+                            return e;
+                        })
+                    );
+                }
+                return;
+            }
+            sounds.NEW_MESSAGE.play();
             setMessages((prev) => {
                 if (!prev[from]) {
                     prev[from] = [];
@@ -90,6 +124,7 @@ export function App() {
                             unread: true,
                             sender:
                                 from === "groupChat" ? data.sender : undefined,
+                            time: Date.now(),
                         },
                     ],
                 };

@@ -4,11 +4,14 @@ import { Context } from "../Context";
 import socket from "../SocketClient";
 import { useEffect } from "react";
 import SocketClient from "../SocketClient";
+import moment from "moment";
 import sounds from "../helpers/sound";
 import { BsArrowDownShort } from "react-icons/bs";
 
 function ChatBox() {
     const { user } = useContext(Context);
+    let timeout = null;
+    const [isTyping, setIsTyping] = React.useState(false);
     const { contacts, messages, currentContact, setMessages } = useContext(
         Context
     );
@@ -63,15 +66,58 @@ function ChatBox() {
                 ...prev,
                 [currentContact]: [
                     ...prev[currentContact],
-                    { text: message, user: true },
+                    { text: message, user: true, time: Date.now() },
                 ],
             };
         });
     }
+    const onTyping = () => {
+        clearTimeout(timeout);
+        if (!isTyping) SocketClient.emit("typeStart", { to: currentContact });
+        setIsTyping(true);
+        timeout = setTimeout(() => {
+            if (isTyping) {
+                SocketClient.emit("typeEnd", { to: currentContact });
+                setIsTyping(false);
+            }
+        }, 2000);
+    };
     return (
         <div className="chatbox">
-            <header>
-                <h1 style={{ marginLeft: 10 }}>{CONTACT.username}</h1>
+            <header
+                style={{
+                    display: "flex",
+                    alignItems: "center",
+                    padding: "10px 0px 10px 20px",
+                }}
+            >
+                <img
+                    style={{ height: 40, width: 40, borderRadius: "50%" }}
+                    alt="user"
+                    src={
+                        !/\w+[ai]$/.test(user.name)
+                            ? CONTACT.uid === "groupChat"
+                                ? "https://www.flaticon.com/svg/static/icons/svg/166/166258.svg"
+                                : "https://readyrefrigeration.ca/sites/default/files/styles/headshot/adaptive-image/public/nobody.jpg"
+                            : "https://www.kindpng.com/picc/m/695-6955645_female-user-female-user-icon-png-transparent-png.png"
+                    }
+                />
+                <div
+                    style={{
+                        margin: "0px 20px",
+                    }}
+                >
+                    <h1>{CONTACT.username}</h1>
+                    {CONTACT.typing ? (
+                        <div style={{ color: "white", margin: 0, padding: 0 }}>
+                            {CONTACT.sender
+                                ? CONTACT.sender + ": typing..."
+                                : "typing..."}
+                        </div>
+                    ) : (
+                        ""
+                    )}
+                </div>
             </header>
             <div className="sections" ref={messageRef}>
                 {MESSAGES.map((message) => {
@@ -82,27 +128,42 @@ function ChatBox() {
                                 flexDirection: "column",
                             }}
                         >
-                            {message.sender && message.sender !== user.username && (
-                                <span
-                                    style={{
-                                        margin: "0 0 -10px 10px",
-                                        color: "grey",
-                                        fontSize: "90%"
-                                    }}
-                                >
-                                    {message.sender}
-                                </span>
-                            )}
                             <div
                                 className={`${
-                                    message.user || message.sender === user.username
+                                    message.user ||
+                                    message.sender === user.username
                                         ? "message_sender"
                                         : "message_receiver"
                                 } message`}
-                                dangerouslySetInnerHTML={{
-                                    __html: message.text,
-                                }}
-                            ></div>
+                            >
+                                {message.sender &&
+                                    message.sender !== user.username && (
+                                        <div
+                                            style={{
+                                                color: "#253757",
+                                                fontWeight: "bold",
+                                                fontSize: "90%",
+                                            }}
+                                        >
+                                            {message.sender}
+                                        </div>
+                                    )}
+                                <span
+                                    dangerouslySetInnerHTML={{
+                                        __html: message.text,
+                                    }}
+                                ></span>
+                                <div
+                                    style={{
+                                        color: "#c1c1c1",
+                                        fontSize: "70%",
+                                        alignSelf: "flex-end",
+                                        textAlign: "right",
+                                    }}
+                                >
+                                    {moment(new Date(message.time)).calendar()}
+                                </div>
+                            </div>
                             {/* {
                                     message.user && <div className="message message_sender">{message.text}</div>
                                 }
@@ -114,7 +175,7 @@ function ChatBox() {
                 })}
             </div>
             <footer>
-                    <div className="scroll-top" onClick={scrollToBottom}>
+                <div className="scroll-top" onClick={scrollToBottom}>
                     <BsArrowDownShort size={34} color="white" />
                 </div>
                 {/* <div id="search-container">
@@ -128,6 +189,7 @@ function ChatBox() {
                         id="textarea"
                         placeholder="Type a message.."
                         contentEditable={true}
+                        onKeyPress={onTyping}
                     ></p>
                     <button onClick={send}>send</button>
                 </div>
